@@ -1,0 +1,155 @@
+<mvc:View
+    controllerName="jgp.desafio5p.aprovacaosolicitacoes.controller.Worklist"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:semantic="sap.f.semantic"
+>
+    <semantic:SemanticPage
+        id="page"
+        headerPinnable="false"
+        showFooter="true"
+        toggleHeaderOnTitleClick="false"
+    >
+        <semantic:titleHeading>
+            <Title
+                text="{i18n>worklistTitle}"
+                level="H2"
+            />
+        </semantic:titleHeading>
+
+        <semantic:content>
+            <Table
+                id="mainTable"
+                mode="MultiSelect"
+                width="auto"
+                items="{
+                    path: '/SolicitacaoSet',
+                    sorter: {
+                        path: 'Material',
+                        descending: false
+                    },
+                    parameters: {
+                        expand: 'toMaterial,toPreco'
+                    }
+                }"
+                noDataText="{worklistView>/tableNoDataText}"
+                busyIndicatorDelay="{worklistView>/tableBusyDelay}"
+                growing="true"
+                growingScrollToLoad="true"
+                updateFinished=".onUpdateFinished"
+            >
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title
+                            id="tableHeader"
+                            text="{worklistView>/worklistTableTitle}"
+                            level="H3"
+                        />
+                        <ToolbarSpacer />
+                        <SearchField
+                            id="searchField"
+                            tooltip="{i18n>worklistSearchTooltip}"
+                            search=".onSearch"
+                        >
+                            <layoutData>
+                                <OverflowToolbarLayoutData
+                                    maxWidth="200px"
+                                    priority="NeverOverflow"
+                                />
+                            </layoutData>
+                        </SearchField>
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column id="idColumn">
+                        <Text
+                            text="ID"
+                            id="idColumnTitle"
+                        />
+                    </Column>
+                    <Column
+                        id="materialColumn"
+                        hAlign="Begin"
+                    >
+                        <Text
+                            text="Material"
+                            id="materialColumnTitle"
+                        />
+                    </Column>
+                    <Column id="precoAtualColumn">
+                        <Text
+                            text="Preço Atual"
+                            id="precoAtualColumnTitle"
+                        />
+                    </Column>
+                    <Column id="novoPrecoColumn">
+                        <Text
+                            text="Novo Preço"
+                            id="novoPrecoColumnTitle"
+                        />
+                    </Column>
+                    <Column id="dataColumn">
+                        <Text
+                            text="Data"
+                            id="dataColumnTitle"
+                        />
+                    </Column>
+                    <Column id="horaColumn">
+                        <Text
+                            text="Hora"
+                            id="horaColumnTitle"
+                        />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem
+                        type="Navigation"
+                        press=".onPress"
+                    >
+                    <cells>
+                        <!--ID-->
+                        <ObjectIdentifier title="{Id}" />
+                        <!--Material-->
+                        <ObjectIdentifier
+                            title="{Material}"
+                            text="{toMaterial/Descricao} ({toMaterial/CodigoExterno})"
+                        />
+                        <!--Preço Atual-->
+                        <Text text="{toPreco/Valor}" />
+                        <!--Novo Preço-->
+                        <Text text="{NovoValor}" />
+                        <!--Data Solicitação-->
+                        <Text text="{
+                            path: 'DataSolicitacao',
+                            type: 'sap.ui.model.type.Date',
+                            formatOptions: {
+                                style: 'medium'
+                            }
+                        }" />
+                        <!--Hora Solicitação-->
+                        <Text text="{
+                            path: 'HoraSolicitacao',
+                            type: 'sap.ui.model.odata.type.Time'
+                        }" />
+                    </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </semantic:content>
+
+        <semantic:footerCustomActions>
+            <Button id="btnRejeitar" text="Rejeitar" press="onRejeitar"/>
+            <Button id="btnAprovar" text="Aprovar" press="onAprovar"/>
+        </semantic:footerCustomActions>
+
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction
+                id="shareEmail"
+                press=".onShareEmailPress"
+            />
+        </semantic:sendEmailAction>
+
+    </semantic:SemanticPage>
+</mvc:View>
